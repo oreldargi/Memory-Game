@@ -1,0 +1,28 @@
+.container .cards{
+    display: flex;
+    
+}
+.container .cards .card1{
+    background-image: url(./images/backcard.jpg);
+    background-size: cover;
+    height: 200px;
+    width: 200px;
+}
+.container .cards .card2{
+    background-image: url(./images/backcard.jpg);
+    background-size: cover;
+    height: 200px;
+    width: 200px;
+}
+.container .cards .card3{
+    background-image: url(./images/backcard.jpg);
+    background-size: cover;
+    height: 200px;
+    width: 200px;
+}
+.container .cards .card4{
+    background-image: url(./images/backcard.jpg);
+    background-size: cover;
+    height: 200px;
+    width: 200px;
+}

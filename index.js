@@ -1,6 +1,13 @@
 const rowNum = 3;
 const colNum = 4;
-images = [];
+
+let flippedCard1 = -1;
+let flippedCard2 = -1;
+
+let images = [];
+let guessedCards = [];
+
+let interactable = true;
 
 function getRandomizedImagesList() {
     let indicesList = [];
@@ -48,18 +55,82 @@ function generateGameBoard() {
 }
 
 function cardOnClickHandler(card){
-    console.log(card.target.style.backgroundImage);
-    if(card.target.style.backgroundImage == 'url("./images/backcard.jpg")') {
-        const target = card.target.className;
-        const split = target.split("-");
-        const index = parseInt(split[1]);
-        card.target.style.backgroundImage = `url("./images/ca${images[index]}.jpg")`;
-    } else{
-        card.target.style.backgroundImage = "url(./images/backcard.jpg)";
+    if (interactable == false) {
+        return
     }
+
+    const target = card.target.className;
+    const split = target.split("-");
+    const index = parseInt(split[1]);
+
+    if(card.target.style.backgroundImage == 'url("./images/backcard.jpg")') {
+        if (flippedCard1 == -1) {
+            card.target.style.backgroundImage = `url("./images/ca${images[index]}.jpg")`;
+            flippedCard1 = index;
+        } else {
+            if (flippedCard2 == -1){
+                card.target.style.backgroundImage = `url("./images/ca${images[index]}.jpg")`;
+                flippedCard2 = index;
+            }
+        }
+
+        if (flippedCard2 != -1 && flippedCard1 != -1) {
+            guess()
+        }
+    } else{
+        if (flippedCard1 == index) {
+            flippedCard1 = -1;
+            card.target.style.backgroundImage = "url(./images/backcard.jpg)";
+        } else {
+            if (flippedCard2 == index) {
+                flippedCard2 = -1;
+                card.target.style.backgroundImage = "url(./images/backcard.jpg)";
+            }
+        }
+    }
+
+    console.log("flipped1: "+ flippedCard1);
+    console.log("flipped2: "+ flippedCard2);
+}
+
+
+function guess(){
+    if (images[flippedCard1] == images[flippedCard2]) {
+        guessedCards.push(flippedCard1);
+        guessedCards.push(flippedCard2);
+
+        document.querySelector(`.card-${flippedCard1}`).removeEventListener("click", cardOnClickHandler);
+        document.querySelector(`.card-${flippedCard2}`).removeEventListener("click", cardOnClickHandler);
+
+        flippedCard1 = -1;
+        flippedCard2 = -1;
+    } else {
+        interactable = false;
+        setTimeout(() => {
+            document.querySelector(`.card-${flippedCard1}`).style.backgroundImage = "url(./images/backcard.jpg)";
+            document.querySelector(`.card-${flippedCard2}`).style.backgroundImage = "url(./images/backcard.jpg)";
+
+            flippedCard1 = -1;
+            flippedCard2 = -1;
+
+            interactable = true;
+        }, 1000)
+    }
+
+   if (guessedCards.length == rowNum * colNum){
+       if (confirm("You won!")) {
+           startNewGame()
+       }
+   }
 }
 
 function startNewGame() {
+    flippedCard1 = -1;
+    flippedCard2 = -1;
+
+    images = [];
+    guessedCards = [];
+
     let oldBoard = document.querySelector(`.game-board`);
     if (oldBoard != null) {
         oldBoard.parentElement.removeChild(oldBoard)
